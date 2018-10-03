@@ -46,7 +46,7 @@ class ClassName:
                 uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
                 self.buttonhold = True
             
-            if self.controller.buttons[1] == 1 and not self.buttonhold:
+            if (self.controller.buttons[1] == 1 or self.controller.buttons[6] == 1) and not self.buttonhold:
                 rospy.loginfo("Turning OFF lights")
                 self.uv_trigger_req.data = False
                 uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
