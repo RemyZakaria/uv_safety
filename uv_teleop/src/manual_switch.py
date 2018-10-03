@@ -10,6 +10,7 @@ class ClassName:
         #      ROSNODE
         rospy.init_node('vision_navigation', anonymous=True)
         self.teleop_joy_subscriber = rospy.Subscriber('/joy', Joy, self.joy_callback)
+
         self.uv_trigger_req = std_srvs.srv.SetBoolRequest()
         rospy.loginfo("Waiting for /switch_uv service...")
         rospy.wait_for_service("/switch_uv")
@@ -24,20 +25,12 @@ class ClassName:
         self.rate = rospy.Rate(30)
 
         #      VARIABLES
+        self.buttonhold = False
         #self.run_state = False
 
 
     def joy_callback(self, data):
         self.controller = data
-        if self.controller.buttons[0] == 1:
-            print("True")
-            self.uv_trigger_req.data = True
-            result = self.uv_trigger_client.call(self.uv_trigger_req.data)
-        if self.controller.buttons[1] == 1:
-            print("False")
-            self.uv_trigger_req.data = False
-            result = self.uv_trigger_client.call(self.uv_trigger_req.data)
-        
         # if self.controller.buttons[6] == 1 and self.controller.buttons[7] == 1:
         #     self.run_state = True
         # if self.controller.buttons[6] == 1:
@@ -46,6 +39,20 @@ class ClassName:
 
     def main_function(self):
         while not rospy.is_shutdown():
+            if self.controller.buttons[0] == 1 and not self.buttonhold:
+                rospy.loginfo("Turning ON lights")
+                self.uv_trigger_req.data = True
+                uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
+                self.buttonhold = True
+            
+            if self.controller.buttons[1] == 1 and not self.buttonhold:
+                rospy.loginfo("Turning ON lights")
+                self.uv_trigger_req.data = False
+                uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
+                self.buttonhold = True
+            
+            if self.controller.buttons[0] == 0 and self.controller.buttons[0] == 0:
+                self.buttonhold = False
             self.rate.sleep()
 
 
