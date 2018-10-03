@@ -47,12 +47,12 @@ class ClassName:
                 self.buttonhold = True
             
             if self.controller.buttons[1] == 1 and not self.buttonhold:
-                rospy.loginfo("Turning ON lights")
+                rospy.loginfo("Turning OFF lights")
                 self.uv_trigger_req.data = False
                 uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
                 self.buttonhold = True
             
-            if self.controller.buttons[0] == 0 and self.controller.buttons[0] == 0:
+            if self.controller.buttons[0] == 0 and self.controller.buttons[1] == 0:
                 self.buttonhold = False
             self.rate.sleep()
 
