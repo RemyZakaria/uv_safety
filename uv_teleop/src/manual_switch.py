@@ -13,7 +13,7 @@ class ClassName:
 
         self.uv_trigger_req = std_srvs.srv.SetBoolRequest()
         rospy.loginfo("Waiting for /switch_uv service...")
-        #rospy.wait_for_service("/switch_uv")
+        rospy.wait_for_service("/switch_uv")
         self.uv_trigger_client = rospy.ServiceProxy("/switch_uv", std_srvs.srv.SetBool)
         self.velocity_publisher = rospy.Publisher('/teleop_joy/cmd_vel', Twist, queue_size=10)
 
@@ -54,13 +54,13 @@ class ClassName:
             if self.controller.buttons[0] == 1 and not self.buttonhold:
                 rospy.loginfo("Turning ON lights")
                 self.uv_trigger_req.data = True
-                #uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
+                uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
                 self.buttonhold = True
             
             if (self.controller.buttons[1] == 1 or self.controller.buttons[6] == 1) and not self.buttonhold:
                 rospy.loginfo("Turning OFF lights")
                 self.uv_trigger_req.data = False
-                #uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
+                uv_trigger_res = self.uv_trigger_client.call(self.uv_trigger_req.data)
                 self.buttonhold = True
             
             if self.controller.buttons[0] == 0 and self.controller.buttons[1] == 0 and self.controller.buttons[6] == 0:
